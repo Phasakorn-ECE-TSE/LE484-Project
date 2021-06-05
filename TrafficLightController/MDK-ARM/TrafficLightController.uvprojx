@@ -414,7 +414,7 @@
             <File>
               <FileName>bsp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\bsp.c</FilePath>
+              <FilePath>..\Core\Src\bsp.c</FilePath>
             </File>
           </Files>
         </Group>
