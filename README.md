@@ -1,4 +1,4 @@
-# LE484-Project
+# LE484-Project1
 Demo repository for LE484 Microprocessor at Thammasat School of Engineering
 
 ## Traffic Ligth Controller
