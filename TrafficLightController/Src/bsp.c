@@ -60,4 +60,5 @@ void Signal_Flash(void)
 	GREEN_OFF();
 	DW();
 	YELLOW_Toggle();
+	Delay(10);
 }
