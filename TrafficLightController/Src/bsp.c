@@ -9,11 +9,12 @@ volatile int Button_Status = 0;
 */
 void BSP_Init(void)
 {
+		printf("State: RESTART\n");
 		RED_Toggle();
 		YELLOW_Toggle();
 		GREEN_Toggle();
 		WALK_Toggle();
-		Delay(45);
+		Delay(49);
 		RED_Toggle();
 		YELLOW_Toggle();
 		GREEN_Toggle();
@@ -28,7 +29,7 @@ void Signal_Pass(void)
 		DW();
 		Delay(20);
 		RED_OFF();
-		Delay(3);
+		Delay(2);
 		GREEN_ON();
 		
 
@@ -40,11 +41,11 @@ void Signal_Pass(void)
 void Signal_Block(void)
 {
     GREEN_OFF();
-		Delay(3);
+		Delay(2);
 		YELLOW_ON();
 		Delay(15);
 		YELLOW_OFF();
-		Delay(3);
+		Delay(2);
 		RED_ON();
 		Delay(15);
 		WALK();
