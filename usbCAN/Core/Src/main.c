@@ -70,12 +70,14 @@ CAN_TxHeaderTypeDef TxHeader;
 uint8_t TxData[8];
 uint32_t TxMailbox;
 
-void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan){
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) {
 }
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
-	   HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, RxData);
-	   canRxDataSize = RxHeader.DLC;
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
+	HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, RxData);
+	canRxDataSize = RxHeader.DLC;
 }
+
 
 /* USER CODE END 0 */
 
@@ -110,10 +112,10 @@ int main(void)
   MX_CAN1_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-  char txt[] = "Hello, world\n";
+	char txt[] = "Hello, Wolrd\n";
 	CDC_Transmit_FS(txt, strlen(txt));
 	
-  filterConf.FilterBank = 0;
+	filterConf.FilterBank = 0;
 	filterConf.FilterMode =CAN_FILTERMODE_IDLIST;
 	filterConf.FilterScale = CAN_FILTERSCALE_16BIT;
 	filterConf.FilterFIFOAssignment = CAN_RX_FIFO0;
@@ -124,15 +126,16 @@ int main(void)
 	filterConf.FilterMaskIdLow =  (0x0106 << 5);
 	filterConf.FilterActivation = CAN_FILTER_ENABLE;
 	filterConf.SlaveStartFilterBank = 0;
-	if (HAL_CAN_ConfigFilter(&hcan1, &filterConf) != HAL_OK){
+	if (HAL_CAN_ConfigFilter(&hcan1, &filterConf) != HAL_OK) {
 		Error_Handler();
 	}
-	if(HAL_CAN_Start(&hcan1) != HAL_OK){
-    Error_Handler();		
+	if (HAL_CAN_Start(&hcan1) != HAL_OK){
+		Error_Handler();
 	}
-	if(HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK){
-    Error_Handler();		
+	if (HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_TX_MAILBOX_EMPTY ) != HAL_OK) {
+		Error_Handler();
 	}
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -142,17 +145,18 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(usbRxDataSize > 0){
-		  char buf[50];
+		if (usbRxDataSize > 0) {
+			char buf[100];
 			extern uint8_t UserRxBufferFS[];
 			sprintf(buf, "Got %s\n", UserRxBufferFS);
 			CDC_Transmit_FS(buf, strlen(buf));
-      usbRxDataSize = 0;		
-		}
-		if(sw1Pressed){
+			usbRxDataSize = 0;
+		}	
+		
+		if (sw1Pressed) {
 			static uint8_t count = 0;
 			TxHeader.StdId = 0x0100 + count;
-			TxHeader.ExtId = 0x00000000;
+			TxHeader.ExtId =0x00000000;
 			TxHeader.IDE = CAN_ID_STD;
 			TxHeader.RTR = CAN_RTR_DATA;
 			TxHeader.DLC = 8;
@@ -168,19 +172,22 @@ int main(void)
 			HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
 			sw1Pressed = 0;
 		}
-		if(canRxDataSize > 0){
-		  char buf[50];
-			switch (canRxDataSize){
-				case 8 :
-					sprintf(buf, "%d: %X %X %X %X %X %X %X %X\n", canRxDataSize, RxData[0],RxData[1],RxData[2],RxData[3],RxData[4],RxData[5],RxData[6],RxData[7]);
-				  break;
+		
+		if (canRxDataSize > 0) {
+			char buf[100];
+			switch (canRxDataSize) {
+				case 8:
+					sprintf(buf,"%d: %x %x %x %x %x %x %x %x \n",canRxDataSize,RxData[0], RxData[1], RxData[2], RxData[3], RxData[4], RxData[5],RxData[6],RxData[7]);
+				break;
 				default:
 					sprintf(buf, "Got %d bytes\n", canRxDataSize);
-		  }
-		CDC_Transmit_FS(buf, strlen(buf));
+			}
+			CDC_Transmit_FS(buf,strlen(buf));
 			canRxDataSize = 0;
 		}
-		HAL_Delay(100);
+		
+		HAL_Delay(300);
+		
   }
   /* USER CODE END 3 */
 }
@@ -283,8 +290,8 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PB2 */
-  GPIO_InitStruct.Pin = GPIO_PIN_2;
+  /*Configure GPIO pins : PB2 PB15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -299,6 +306,9 @@ static void MX_GPIO_Init(void)
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
 
