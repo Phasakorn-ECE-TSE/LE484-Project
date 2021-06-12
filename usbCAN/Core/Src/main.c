@@ -115,15 +115,15 @@ int main(void)
 	char txt[] = "Hello, Wolrd\n";
 	CDC_Transmit_FS(txt, strlen(txt));
 	
-	filterConf.FilterBank = 0;
-	filterConf.FilterMode = CAN_FILTERMODE_IDMASK;
+filterConf.FilterBank = 0;
+	filterConf.FilterMode =CAN_FILTERMODE_IDLIST;
 	filterConf.FilterScale = CAN_FILTERSCALE_16BIT;
 	filterConf.FilterFIFOAssignment = CAN_RX_FIFO0;
 	filterConf.FilterIdHigh = (0x0100 << 5);
-	filterConf.FilterIdLow = 0x0000;
-	uint32_t maskID = 0x7FFFFFFF;
-	filterConf.FilterMaskIdHigh = ((maskID << 5 )| (maskID >> 27)) & 0xFFFF;
-	filterConf.FilterMaskIdLow = (maskID >> 8) & 0xFFF8;
+	filterConf.FilterIdLow = (0x0102 << 5);
+	uint32_t maskId = 0x7FFFFFFC;
+	filterConf.FilterMaskIdHigh = (0x0104 << 5);
+	filterConf.FilterMaskIdLow =  (0x0106 << 5);
 	filterConf.FilterActivation = CAN_FILTER_ENABLE;
 	filterConf.SlaveStartFilterBank = 0;
 	if (HAL_CAN_ConfigFilter(&hcan1, &filterConf) != HAL_OK) {
